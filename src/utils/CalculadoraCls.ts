@@ -11,6 +11,8 @@ export class CalculadoraCls {
      * @param bt string: valor do botão
      */
     public enviaValor(bt: string): void {
+
+        console.log('entrou na classe', bt)
         if (bt == ',') {
             this.temVirgula = true
         }
