@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ES6",
+    "target": "ES2022",
     "module": "commonjs", //ou module para usar o export e import
     //"check": true,   para checar o javaescript
     "outDir": "dist",

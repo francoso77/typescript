@@ -1,150 +1,157 @@
+var primeiroValor: number = 0
+const operadores: Array<string> = ['/', '*', '+', '-', 'C', '←', '=', '√', 'x²']
+var operador: string = ''
+var txtVisor: string = '0'
+var temVirgula: boolean = false
+
 export class CalculadoraCls {
-
-    private primeiroValor: number = 0
-    private operadores: Array<string> = ['/', '*', '+', '-', 'C', '←', '=', '√', 'x²']
-    private operador: string = ''
-    public txtVisor: string = '0'
-    private temVirgula: boolean = false
-
     /**
      * Recebe o botão clicado e registra o valor no visor da calculadora
      * @param bt string: valor do botão
      */
     public enviaValor(bt: string): void {
 
-        console.log('entrou na classe', bt)
         if (bt == ',') {
-            this.temVirgula = true
+            temVirgula = true
         }
-        if (!this.operadores.includes(bt)) {
-            if (!this.txtVisor) {
-                this.txtVisor = bt
+        if (!operadores.includes(bt)) {
+            if (txtVisor == '0') {
+                txtVisor = bt
             }
             else {
-                if (this.txtVisor == '0') {
-                    this.txtVisor = bt
-                } else if (bt == '0') {
-                    this.txtVisor = this.txtVisor.concat(bt)
-                } else {
+                // if (txtVisor == '0') {
+                //     txtVisor = bt
+                // } else if (bt == '0') {
+                //     txtVisor = txtVisor.concat(bt)
+                // } else {
 
-                    this.txtVisor = this.txtVisor.concat(bt)
-                    this.formatar()
-                }
+                // }
+                txtVisor = txtVisor.concat(bt)
             }
+            formatar(bt)
         }
         else {
-            this.limpaValor()
+            limpaValor()
             if (bt == '←') {
-                if (this.txtVisor.length == 0) {
-                    this.txtVisor = '0'
+                if (txtVisor.length == 1) {
+                    txtVisor = '0'
                 } else {
-                    this.txtVisor = this.txtVisor.substring(0, this.txtVisor.length - 1)
+                    txtVisor = txtVisor.substring(0, txtVisor.length - 1)
+                    if (txtVisor.length == 0) txtVisor = '0'
                 }
             }
             else if (bt == 'C') {
-                this.txtVisor = '0'
+                txtVisor = '0'
             }
             else if (bt == '=') {
-                if (!this.primeiroValor) {
-                    this.txtVisor = '0'
+                if (!primeiroValor) {
+                    txtVisor = '0'
                 } else {
 
-                    this.calcular(this.primeiroValor, parseFloat(this.txtVisor), this.operador)
-                    this.primeiroValor = 0
+                    calcular(primeiroValor, parseFloat(txtVisor), operador)
+                    primeiroValor = 0
                 }
             }
             else if (bt == '+') {
-                this.primeiroValor = parseFloat(this.txtVisor)
-                this.operador = '+'
-                this.txtVisor = '0'
+                primeiroValor = parseFloat(txtVisor)
+                operador = '+'
+                txtVisor = '0'
             }
             else if (bt == '-') {
-                this.primeiroValor = parseFloat(this.txtVisor)
-                this.operador = '-'
-                this.txtVisor = '0'
+                primeiroValor = parseFloat(txtVisor)
+                operador = '-'
+                txtVisor = '0'
             }
             else if (bt == '/') {
-                this.primeiroValor = parseFloat(this.txtVisor)
-                this.operador = '/'
-                this.txtVisor = '0'
+                primeiroValor = parseFloat(txtVisor)
+                operador = '/'
+                txtVisor = '0'
             }
             else if (bt == '*') {
-                this.primeiroValor = parseFloat(this.txtVisor)
-                this.operador = '*'
-                this.txtVisor = '0'
+                primeiroValor = parseFloat(txtVisor)
+                operador = '*'
+                txtVisor = '0'
             } else if (bt == '√') {
-                if (this.txtVisor != '0') {
-                    this.primeiroValor = parseFloat(this.txtVisor)
-                    this.txtVisor = Math.sqrt(this.primeiroValor).toString()
+                if (txtVisor != '0') {
+                    primeiroValor = parseFloat(txtVisor)
+                    txtVisor = Math.sqrt(primeiroValor).toString()
                 }
             } else if (bt == 'x²') {
-                if (this.txtVisor != '0') {
-                    this.primeiroValor = parseFloat(this.txtVisor)
-                    this.txtVisor = (this.primeiroValor ** 2).toString()
+                if (txtVisor != '0') {
+                    primeiroValor = parseFloat(txtVisor)
+                    txtVisor = (primeiroValor ** 2).toString()
                 }
             }
-
+            formatar(bt)
         }
     }
+}
 
-    /**
-     * Realiza a operação matemática escolhida pelo usuário
-     * @param vr1 number: primeiro valor informado
-     * @param vr2 number: segundo valor informado
-     * @param op string: qual operação foi definida  
-     */
-    public calcular(vr1: number, vr2: number, op: string): void {
+/**
+ * Realiza a operação matemática escolhida pelo usuário
+ * @param vr1 number: primeiro valor informado
+ * @param vr2 number: segundo valor informado
+ * @param op string: qual operação foi definida  
+ */
+function calcular(vr1: number, vr2: number, op: string): void {
 
-        let resultado: number = 0
-        if (op == '+') {
-            resultado = vr1 + vr2
-        } else if (op == '-') {
-            resultado = vr1 - vr2
-        } else if (op == '/') {
-            if (vr1 == 0 || vr2 == 0) {
-                resultado = 0
-            } else {
-                resultado = vr1 / vr2
-            }
-        } else if (op == '*') {
-            resultado = vr1 * vr2
-        }
-        this.operador = ''
-        this.txtVisor = resultado.toLocaleString('pt-br')
-        this.formatar()
-
-    }
-
-    /**
-     * Formato o valor do visor no padrão Português - Brasil
-     */
-    public formatar(): void {
-        this.limpaValor()
-        const valor: number = parseFloat(this.txtVisor)
-
-        if (parseInt(this.txtVisor) != parseFloat(this.txtVisor)) {
-            this.txtVisor = valor.toLocaleString('pt-br', { style: 'decimal', minimumFractionDigits: 0 })
-        } else if (this.temVirgula) {
-            this.txtVisor = valor.toLocaleString('pt-br', { style: 'decimal', minimumFractionDigits: 0 }).concat(',')
-            this.temVirgula = false
+    let resultado: number = 0
+    if (op == '+') {
+        resultado = vr1 + vr2
+    } else if (op == '-') {
+        resultado = vr1 - vr2
+    } else if (op == '/') {
+        if (vr1 == 0 || vr2 == 0) {
+            resultado = 0
         } else {
-            this.txtVisor = valor.toLocaleString('pt-br', { style: 'decimal', minimumFractionDigits: 0 })
+            resultado = vr1 / vr2
         }
-
+    } else if (op == '*') {
+        resultado = vr1 * vr2
     }
+    operador = ''
+    txtVisor = resultado.toLocaleString('pt-br')
+    formatar()
+}
 
-    /**
-     * Limpa o valor recebido, e tranforma em número para efeito de calculos  
-     */
-    public limpaValor(): void {
-        let vrString = this.txtVisor
-        const tamanho: Array<string> = vrString.split('.')
-        let x: number = 0
+function formatar(bt?: string): void {
+    const tela = document.querySelector('#txtVisor') as HTMLInputElement
 
-        for (x = 0; tamanho.length >= x; x++) {
-            vrString = vrString.replace('.', '')
+    limpaValor()
+    if (txtVisor == '0.') {
+        if (bt) txtVisor = '0,'
+        if (tela) tela.value = txtVisor
+
+    } else {
+
+        const valor: number = parseFloat(txtVisor)
+
+        if (parseInt(txtVisor) != parseFloat(txtVisor)) {
+            txtVisor = valor.toLocaleString('pt-br', { style: 'decimal', minimumFractionDigits: 0 })
+        } else if (temVirgula && valor != 0) {
+            txtVisor = valor.toLocaleString('pt-br', { style: 'decimal', minimumFractionDigits: 0 }).concat(',')
+            temVirgula = false
+        } else {
+            if (txtVisor == '0.0') {
+                txtVisor = '0,0'
+            } else {
+
+                txtVisor = valor.toLocaleString('pt-br', { style: 'decimal', minimumFractionDigits: 0 })
+            }
         }
-        vrString = vrString.replace(',', '.')
-        this.txtVisor = vrString
+        if (tela) tela.value = txtVisor
     }
+}
+
+function limpaValor(): void {
+    if (txtVisor == ',') {
+        txtVisor = '0,'
+    }
+    let vrString = txtVisor
+    const tamanho: string[] = vrString.split('.')
+    for (let x: number = 0; tamanho.length >= x; x++) {
+        vrString = vrString.replace('.', '')
+    }
+    vrString = vrString.replace(',', '.')
+    txtVisor = vrString
 }
